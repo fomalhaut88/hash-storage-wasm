@@ -1,6 +1,6 @@
 [package]
 name = "hash-storage-wasm"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Alexander <mail@fomalhaut.su>"]
 edition = "2018"
 

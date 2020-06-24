@@ -86,7 +86,7 @@ pub fn decrypt(private_key: &str, block: &str) -> String {
 
 
 #[wasm_bindgen]
-pub fn build_signature(private_key: &str, key: &str, block: &str) -> String {
+pub fn build_signature(private_key: &str, data: &str) -> String {
     let x = hex_to_bigi(private_key);
 
     let mut rng = rand::thread_rng();
@@ -94,8 +94,7 @@ pub fn build_signature(private_key: &str, key: &str, block: &str) -> String {
 
     let hash = {
         let mut hasher = Sha256::new();
-        hasher.input(key);
-        hasher.input(block);
+        hasher.input(data);
         hasher.result().to_vec()
     };
 
@@ -106,7 +105,7 @@ pub fn build_signature(private_key: &str, key: &str, block: &str) -> String {
 
 
 #[wasm_bindgen]
-pub fn check_signature(public_key: &str, key: &str, block: &str, signature: &str) -> bool {
+pub fn check_signature(public_key: &str, data: &str, signature: &str) -> bool {
     let s = hex_to_bigi_pair(signature);
     let h = hex_to_point(public_key);
 
@@ -114,8 +113,7 @@ pub fn check_signature(public_key: &str, key: &str, block: &str, signature: &str
 
     let hash = {
         let mut hasher = Sha256::new();
-        hasher.input(key);
-        hasher.input(block);
+        hasher.input(data);
         hasher.result().to_vec()
     };
 
@@ -186,10 +184,9 @@ mod tests {
     fn test_signature() {
         let private_key = "12BEC995D37D5267AD734B5B63FFFF048A511F71CD086D3E212FF13C9A037FD1";
         let public_key = "9F12C869D6330074C913C9D547946C5AA0DC9180F55CC001FDD06FAE3D281011FA32C6A14C56180C654E2224B6DB0A5B738736D59E9036254F41D32C7BF9C825";
-        let data_key = "Data key";
-        let data_block = "Data block";
-        let signature = build_signature(&private_key, &data_key, &data_block);
-        assert_eq!(check_signature(&public_key, &data_key, &data_block, &signature), true);
+        let data = "Data block";
+        let signature = build_signature(&private_key, &data);
+        assert_eq!(check_signature(&public_key, &data, &signature), true);
     }
 
     #[test]
